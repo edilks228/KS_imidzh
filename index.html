@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KS ИМИДЖ — Каталог товаров</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy: #1a3a5c; --blue: #1e4d7b; --mid-blue: #2563a8;
+    --light-blue: #4a90c4; --pale-blue: #d6e8f7; --accent: #e8f4ff;
+    --white: #ffffff; --cream: #f5f8fc; --text: #0d2137;
+    --muted: #5a7a9a; --gold: #c9a84c;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: "PT Sans", sans-serif; background: var(--cream); color: var(--text); max-width: 960px; margin: 0 auto; }
+
+  /* COVER */
+  .cover {
+    min-height: 100vh;
+    background: linear-gradient(145deg, var(--navy) 0%, var(--blue) 50%, #0d2e50 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 60px 40px; position: relative; overflow: hidden;
+  }
+  .cover::before { content:""; position:absolute; top:-80px; right:-80px; width:400px; height:400px; border-radius:50%; border:2px solid rgba(255,255,255,0.06); }
+  .cover::after { content:""; position:absolute; bottom:-100px; left:-100px; width:500px; height:500px; border-radius:50%; border:2px solid rgba(255,255,255,0.04); }
+  .cover-logo { width:220px; height:220px; object-fit:contain; border-radius:20px; margin-bottom:36px; filter:drop-shadow(0 8px 30px rgba(0,0,0,0.4)); animation:fadeUp 0.8s ease both; }
+  .cover-title { font-family:"Montserrat",sans-serif; font-size:42px; font-weight:900; color:var(--white); letter-spacing:4px; text-transform:uppercase; animation:fadeUp 0.8s 0.2s ease both; }
+  .cover-subtitle { font-size:16px; color:rgba(255,255,255,0.65); letter-spacing:3px; text-transform:uppercase; margin-top:8px; animation:fadeUp 0.8s 0.35s ease both; }
+  .divider { width:80px; height:3px; background:var(--gold); margin:28px auto; animation:fadeUp 0.8s 0.45s ease both; }
+  .cover-welcome { max-width:560px; font-size:16px; line-height:1.8; color:rgba(255,255,255,0.75); animation:fadeUp 0.8s 0.55s ease both; margin-bottom:48px; }
+  .cover-welcome strong { color:var(--white); }
+
+  .nav-cards { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; animation:fadeUp 0.8s 0.7s ease both; }
+  .nav-card { 
+    background:rgba(255,255,255,0.1); 
+    border:1px solid rgba(255,255,255,0.2); 
+    border-radius:14px; 
+    padding:22px 32px; 
+    cursor:pointer; 
+    text-decoration:none; 
+    color:var(--white); 
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    gap:12px; 
+    transition:all 0.3s ease; 
+    width:180px;          /* было min-width: 160px */
+    backdrop-filter:blur(8px);}  
+  .nav-card:hover { background:rgba(255,255,255,0.18); transform:translateY(-4px); border-color:var(--gold); box-shadow:0 12px 30px rgba(0,0,0,0.3); }
+  .nav-card-icon { font-size:36px; }
+  .nav-card-label { font-family:"Montserrat",sans-serif; font-weight:700; font-size:13px; letter-spacing:1px; text-transform:uppercase; text-align:center; }
+
+  /* SECTION */
+  .section { padding:60px 40px 40px; position:relative; }
+  .section-header { display:flex; align-items:center; gap:20px; margin-bottom:40px; padding-bottom:20px; border-bottom:3px solid var(--pale-blue); }
+  .section-icon { width:64px; height:64px; background:linear-gradient(135deg,var(--blue),var(--mid-blue)); border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:30px; flex-shrink:0; box-shadow:0 6px 20px rgba(30,77,123,0.3); }
+  .section-info h2 { font-family:"Montserrat",sans-serif; font-size:28px; font-weight:900; color:var(--navy); text-transform:uppercase; letter-spacing:2px; }
+  .section-info p { font-size:14px; color:var(--muted); margin-top:4px; }
+  .section-num { font-family:"Montserrat",sans-serif; font-size:80px; font-weight:900; color:var(--pale-blue); position:absolute; right:40px; top:60px; line-height:1; user-select:none; }
+
+  /* GRID */
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:40px; }
+
+  /* ITEM CARD */
+  .item-card { background:var(--white); border-radius:14px; border:1px solid #dce8f4; overflow:hidden; transition:transform 0.25s, box-shadow 0.25s; display:flex; flex-direction:column; }
+  .item-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(30,77,123,0.13); }
+
+  .item-photo {
+    width:100%; height:160px; object-fit:contain; display:block;
+    background: #ffffff;
+    transition: opacity 0.4s ease;
+  }
+  .item-photo.loading { opacity: 0.3; }
+  .photo-wrap { position:relative; height:160px; overflow:hidden; background:#ffffff; border-bottom:1px solid #e8f0f8; }
+  .photo-skeleton { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:36px; color:var(--light-blue); opacity:0.4; }
+
+  .item-body { padding:14px; flex:1; display:flex; flex-direction:column; }
+  .item-name { font-family:"Montserrat",sans-serif; font-weight:700; font-size:13px; color:var(--navy); margin-bottom:4px; line-height:1.3; }
+  .item-desc { font-size:11.5px; color:var(--muted); line-height:1.5; flex:1; margin-bottom:10px; }
+  .item-price { display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px dashed #d0e2f0; }
+  .price-label { font-size:11px; color:var(--muted); letter-spacing:0.5px; text-transform:uppercase; }
+  .price-value { font-family:"Montserrat",sans-serif; font-weight:800; font-size:14px; color:var(--mid-blue); background:var(--accent); border:1px solid var(--pale-blue); border-radius:6px; padding:2px 10px; min-width:80px; text-align:center; }
+
+  .back-btn { display:inline-flex; align-items:center; gap:8px; background:var(--navy); color:var(--white); text-decoration:none; font-family:"Montserrat",sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:10px 20px; border-radius:8px; margin-bottom:32px; transition:background 0.2s; cursor:pointer; }
+  .back-btn:hover { background:var(--mid-blue); }
+
+  .footer { background:var(--navy); color:rgba(255,255,255,0.55); text-align:center; padding:28px 20px; font-size:13px; letter-spacing:1px; }
+  .footer strong { color:var(--white); }
+
+  .page-sep { border:none; border-top:2px dashed #c5daf0; margin:0 40px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  @media print {
+    .cover { page-break-after:always; }
+    .section { page-break-before:always; }
+    .back-btn { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover" id="top">
+  <img class="cover-logo" src="logo.jpeg" alt="KS ИМИДЖ">
+  <div class="cover-title">KS ИМИДЖ</div>
+  <div class="cover-subtitle">Торговый каталог</div>
+  <div class="divider"></div>
+  <p class="cover-welcome">
+    Добро пожаловать в наш каталог товаров!<br>
+    Мы рады предложить вам широкий ассортимент <strong>канцелярских товаров</strong>,
+    <strong>хозяйственных принадлежностей</strong> и <strong>строительных материалов</strong>
+    по выгодным ценам. Для уточнения стоимости — свяжитесь с нашим менеджером.
+  </p>
+  <div class="nav-cards">
+
+    <a class="nav-card" href="#kancel">
+      <span class="nav-card-icon">✏️</span>
+      <span class="nav-card-label">Канцелярия</span>
+    </a>
+
+    <a class="nav-card" href="#hoztovary">
+      <span class="nav-card-icon">🧹</span>
+      <span class="nav-card-label">Хозтовары</span>
+    </a>
+
+    <a class="nav-card" href="#stroytovary">
+      <span class="nav-card-icon">🔧</span>
+      <span class="nav-card-label">Стройтовары</span>
+    </a>
+
+  </div>
+</div>
+
+
+<div class="section" id="kancel">
+  <a class="back-btn" href="#top">← На главную</a>
+  <div class="section-num">01</div>
+  <div class="section-header">
+    <div class="section-icon">✏️</div>
+    <div class="section-info">
+      <h2>Канцелярия</h2>
+      <p>Всё необходимое для офиса, учёбы и работы</p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/sharik.jpg" 
+             alt="Ручки шариковые"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Ручка шариковая DA Silk</div>
+        <div class="item-desc">0,7 мм синяя, Лёгкое письмо, яркие насыщенные чернила, комфортный корпус.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">30 сом</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/gelevaya.jpeg" 
+             alt="Ручки гелевые"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Ручка гелевая brauberg</div>
+        <div class="item-desc">Чёрные японские чернила, 2000 м, 0,35 мм линия.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/depli.jpg" 
+             alt="Карандаши простые"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Карандаши простые</div>
+        <div class="item-desc">Дельфин HB, трёхгранный, с ластиком, тонкая линия, школьный карандаш.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">95 сом</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/marker.jpg" 
+             alt="Маркеры текстовые"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Маркеры для белых досок</div>
+        <div class="item-desc">Attache Economy, чёрный, круглый наконечник, линия 5 мм.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/noteBook.jpg" 
+             alt="Тетради А5 96л."
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Тетради А5 48л.</div>
+        <div class="item-desc">Бизнес-тетрадь Attache Economy Flakes A5, 48 листов, клетка, спираль, синяя/голубая.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/noteBookA4.jpg" 
+             alt="Блокноты А4"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Блокноты А4 96л.</div>
+        <div class="item-desc">Бизнес-тетрадь Attache Economy A4, 96 листов, клетка, синяя, спираль.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/a4Double.jpg" 
+             alt="Бумага А4 (пачка 500л.)"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Бумага А4 (пачка 500л.)</div>
+        <div class="item-desc">80 г/м², белизна 152%. Для принтеров.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">520</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/kartonSkor.jpg" 
+             alt="Скоросшиватель картонный"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Скоросшиватель картонный</div>
+        <div class="item-desc"> Дело № А4 белый 350 г/м²</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">40</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/papkaRegis.jpg" 
+             alt="Папки-регистраторы"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Папки-регистраторы</div>
+        <div class="item-desc">Папка регистратор А4. ПВХ. Эко. 50 мм светло-розовый.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/knopki.jpeg" 
+             alt="Кнопки канцелярские"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Кнопки канцелярские</div>
+        <div class="item-desc">Металлические. 50 шт в упаковке.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/skrepki.jpg" 
+             alt="Скрепки металлические"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Скрепки металлические</div>
+        <div class="item-desc">28 мм, никелированные. Уп. 100 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">50</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/nojnizy.jpg" 
+             alt="Ножницы офисные"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Ножницы офисные</div>
+        <div class="item-desc">Ножницы deli, нержавеющие лезвия. 17 / 21 см.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">350</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/deliStep.jpeg" 
+             alt="Степлер + скобы"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Степлер deli</div>
+        <div class="item-desc">DELI 0425 до 20 листов, платстиковый корпус</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">200</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/stiker.jpeg" 
+             alt="Стикеры Post-it"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Стикеры</div>
+        <div class="item-desc">стикеры бумажные Brauberg, блок для заметок самоклеящиеся, неон, 51х51 мм, 400 л.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">130</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/calc.jpg" 
+             alt="Калькулятор 12-разр."
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Калькулятор</div>
+        <div class="item-desc">SK-222 SKAINER ELECTRONIC CO LTD</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/zazhim.jpg" 
+             alt="Зажимы для бумаг"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Зажимы для бумаг</div>
+        <div class="item-desc">Зажимы для бумаг Attache 15 мм черные (12 штук в коробке).</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/convert.png" 
+             alt="Конверты C4/C5/DL"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Конверты</div>
+        <div class="item-desc">Конверт 124090.50 арт С4 (229*324) 90 г.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/lineika.jpg" 
+             alt="Линейка 30 см"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Линейка 30 см</div>
+        <div class="item-desc">Линейка пласт. 30см Deli 6230 прозрачная.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/lotokA4.jpg" 
+             alt="Лоток для бумаг А4"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Лоток для бумаг А4</div>
+        <div class="item-desc">Лоток для бумаг вертикальный , сборный, 3 отделения, черный.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/korrektor.jpg" 
+             alt="Корректор жидкий"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Корректор жидкий</div>
+        <div class="item-desc">Быстросохнущий, кисточка. 20 мл. Белый.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/razdelitel.jpg" 
+             alt="Разделители для папок"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Разделители для папок</div>
+        <div class="item-desc">Разделители листов, картонные, комплект 100 штук (4 цв. х 25 шт.) "Прямоугольные", 240х105 мм, BRAUBERG.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/trash.jpeg" 
+             alt="Корзина для бумаг"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Корзина для бумаг</div>
+        <div class="item-desc">Сетчатая металлическая. 14 л.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="catalogPhotos/magnit.jpeg" 
+             alt="Магниты для доски"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Магниты для доски</div>
+        <div class="item-desc">Диаметр 40 мм. Цвета ассорти. Уп. 6 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo"
+             src="catalogPhotos/skotsch.jpg" 
+             alt="Клейкая лента (скотч)"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Клейкая лента (скотч)</div>
+        <div class="item-desc">Клейкая лента упаковочная Attache 48 мм x 66 м 45 мкм желтая.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Бумага А4 Double A"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Бумага А4 Double A</div>
+        <div class="item-desc">Офисная бумага для печати, 80 г/м².</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Бумага А4 Бриллиант"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Бумага А4 Бриллиант</div>
+        <div class="item-desc">Офисная бумага для печати, плотность 80 г/м².</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Бумага А3 Double A"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Бумага А3 Double A</div>
+        <div class="item-desc">Офисная бумага формата А3 для печати, 80 г/м².</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Цветная бумага"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Цветная бумага</div>
+        <div class="item-desc">Набор цветной бумаги для офисной техники и творчества.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Бокс файл 8см"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Бокс файл 8 см</div>
+        <div class="item-desc">Архивный короб для хранения документов, ширина корешка 8 см.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Файл пластиковый 8 микрон"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Файл пластиковый 8 микрон</div>
+        <div class="item-desc">Папка-вкладыш А4, плотность 8 мкм. Уп. 100 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Папка А4 пластиковая кнопочная"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Папка А4 пластиковая кнопочная</div>
+        <div class="item-desc">Папка на кнопке, прозрачная, формат А4.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Трудовая книжка"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Трудовая книжка</div>
+        <div class="item-desc">Бланк трудовой книжки установленного образца.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Степлер маленький deli"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Степлер маленький deli</div>
+        <div class="item-desc">Компактный степлер для скоб № 24/6, 26/6.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Скоба для степлера 2616 deli"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Скоба для степлера 26/6 deli</div>
+        <div class="item-desc">Скобы для степлера, уп. 1000 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Скоба для степлера 24/6"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Скоба для степлера 24/6</div>
+        <div class="item-desc">Скобы для степлера, уп. 1000 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Журнал-пропуск, 96 листов"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Журнал пропуск, 96 листов</div>
+        <div class="item-desc">Журнал учёта пропусков, твёрдая обложка, 96 листов.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Вахтовый журнал по кранам"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Вахтовый журнал по кранам</div>
+        <div class="item-desc">Журнал учёта вахт по эксплуатации грузоподъёмных кранов.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Журнал договоров"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Журнал договоров</div>
+        <div class="item-desc">Журнал регистрации договоров, твёрдая обложка.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Ежедневник простой"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Ежедневник простой</div>
+        <div class="item-desc">Недатированный ежедневник, твёрдая обложка, А5.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Бейджик 8*10"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Бейджик 8×10</div>
+        <div class="item-desc">Бейдж с зажимом/клипсой, формат 8×10 см.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Ламинация А3"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Ламинация А3</div>
+        <div class="item-desc">Плёнка для ламинирования формата А3.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Биндер 19мм"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Биндер 19 мм</div>
+        <div class="item-desc">Зажим для бумаг (биндер), ширина 19 мм.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Биндер 25мм"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Биндер 25 мм</div>
+        <div class="item-desc">Зажим для бумаг (биндер), ширина 25 мм.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Биндер 32мм"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Биндер 32 мм</div>
+        <div class="item-desc">Зажим для бумаг (биндер), ширина 32 мм.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Калькулятор 444-888"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Калькулятор 444-888</div>
+        <div class="item-desc">Настольный калькулятор, 12-разрядный.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Органайзер круглый чёрный"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Органайзер круглый чёрный</div>
+        <div class="item-desc">Настольный органайзер-стакан для пишущих принадлежностей.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Краска для печати/принтера"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Краска для печати (для принтера)</div>
+        <div class="item-desc">Штемпельная/штамповая краска, для заправки печатей и штампов.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Скотч 5см"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Скотч 5 см</div>
+        <div class="item-desc">Прозрачный канцелярский скотч, ширина 5 см.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Скотч двухсторонний 3см"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Скотч двухсторонний 3 см</div>
+        <div class="item-desc">Двухсторонняя клейкая лента, ширина 3 см.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Скотч двухсторонний 5см"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Скотч двухсторонний 5 см</div>
+        <div class="item-desc">Двухсторонняя клейкая лента, ширина 5 см.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Стикер"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Стикер</div>
+        <div class="item-desc">Бумажные стикеры для заметок, блок.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Стикер-стрелка"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Стикер-стрелка</div>
+        <div class="item-desc">Стикеры-закладки в форме стрелок для разметки документов.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Стикер квадратный"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Стикер квадратный</div>
+        <div class="item-desc">Квадратные бумажные стикеры для заметок, блок.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Точилка двойная"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Точилка двойная</div>
+        <div class="item-desc">Точилка для карандашей с двумя отверстиями.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Стирательная резинка"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Стирательная резинка (ластик)</div>
+        <div class="item-desc">Мягкий ластик для карандаша, белый.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="page-sep">
+
+<div class="section" id="hoztovary">
+  <a class="back-btn" href="#top">← На главную</a>
+  <div class="section-num">02</div>
+  <div class="section-header">
+    <div class="section-icon">🧹</div>
+    <div class="section-info">
+      <h2>Хозяйственные товары</h2>
+      <p>Уборка, гигиена и быт — всё для дома и офиса</p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Чистящее средство для санузлов"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Чистящее средство для санузлов</div>
+        <div class="item-desc">Гель против известкового налёта. 500 мл.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Средство для мытья полов"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Средство для мытья полов</div>
+        <div class="item-desc">Концентрат. Без разводов. 1 л / 5 л.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Жидкое мыло для рук"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Жидкое мыло для рук</div>
+        <div class="item-desc">Антибактериальное. 500 мл с дозатором.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Ведро пластиковое"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Ведро пластиковое</div>
+        <div class="item-desc">10 л / 15 л / 20 л. С металлической ручкой.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Швабра с отжимом"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Швабра с отжимом</div>
+        <div class="item-desc">Телескопическая ручка. Насадка из микрофибры.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Щётка для унитаза"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Щётка для унитаза</div>
+        <div class="item-desc">С подставкой. Пластик. Белый/серый/чёрный.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Туалетная бумага"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Туалетная бумага</div>
+        <div class="item-desc">2-слойная, белая. 12/48 рулонов.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Освежитель воздуха"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Освежитель воздуха</div>
+        <div class="item-desc">Баллон 300 мл. Нейтрализует запахи.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Мешки для мусора"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Мешки для мусора</div>
+        <div class="item-desc">30 л / 60 л / 120 л. Чёрные/прозрачные.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Губки кухонные"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Губки кухонные</div>
+        <div class="item-desc">Двухсторонние. Жёсткий и мягкий слой. Уп. 5 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Средство для посуды"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Средство для посуды</div>
+        <div class="item-desc">Концентрат. 500 мл / 1 л. Ароматы ассорти.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Средство для стёкол"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Средство для стёкол</div>
+        <div class="item-desc">Спрей 500 мл. Без разводов.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Перчатки резиновые"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Перчатки резиновые</div>
+        <div class="item-desc">Размеры S/M/L. Хозяйственные. Уп. 10 пар.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Бумажные полотенца"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Бумажные полотенца</div>
+        <div class="item-desc">2-слойные. 2 рулона в уп.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Стиральный порошок"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Стиральный порошок</div>
+        <div class="item-desc">Автомат. 1 кг / 3 кг / 6 кг.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Дозатор для мыла"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Дозатор для мыла</div>
+        <div class="item-desc">Настенный / настольный. 500 мл.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Чистящий порошок"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Чистящий порошок</div>
+        <div class="item-desc">Универсальный абразивный. 400 г. Для сантехники.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Лампочки LED"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Лампочки LED</div>
+        <div class="item-desc">E27, 9W/12W/15W. Тёплый / холодный свет.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Батарейки AA / AAA"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Батарейки AA / AAA</div>
+        <div class="item-desc">Щелочные. Уп. 4 / 8 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Корзина бельевая"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Корзина бельевая</div>
+        <div class="item-desc">Пластик, плетёная. 50 л. Крышка в комплекте.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Вантуз резиновый"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Вантуз резиновый</div>
+        <div class="item-desc">Диаметр 100 мм. Деревянная ручка.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Утюг"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Утюг</div>
+        <div class="item-desc">2400 Вт. Паровой. Антипригарная подошва.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="page-sep">
+
+<div class="section" id="stroytovary">
+  <a class="back-btn" href="#top">← На главную</a>
+  <div class="section-num">03</div>
+  <div class="section-header">
+    <div class="section-icon">🔧</div>
+    <div class="section-info">
+      <h2>Строительные товары</h2>
+      <p>Инструменты, крепёж и материалы для ремонта</p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Молоток слесарный"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Молоток слесарный</div>
+        <div class="item-desc">300 г / 500 г / 800 г. Фибергласовая рукоять.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Отвёртки (набор)"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Отвёртки (набор)</div>
+        <div class="item-desc">Плоские + крестовые. 6 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Шурупы / саморезы"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Шурупы / саморезы</div>
+        <div class="item-desc">По дереву и металлу. Уп. 200 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Дюбели пластиковые"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Дюбели пластиковые</div>
+        <div class="item-desc">6×30, 8×40, 10×50 мм. Уп. 100 шт.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Рулетка 3м / 5м / 8м"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Рулетка 3м / 5м / 8м</div>
+        <div class="item-desc">Стальное полотно. Автостоп.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Угольник строительный"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Угольник строительный</div>
+        <div class="item-desc">400×600 мм. Нержавеющая сталь.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Болты и гайки М6–М12"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Болты и гайки М6–М12</div>
+        <div class="item-desc">Оцинкованные. Набор 200 шт с шайбами.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Ножовка по дереву"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Ножовка по дереву</div>
+        <div class="item-desc">Полотно 450 мм. Зубья 7 TPI.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Разводной ключ"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Разводной ключ</div>
+        <div class="item-desc">200 / 300 мм. Хромованадиевая сталь.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Стремянка алюминиевая"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Стремянка алюминиевая</div>
+        <div class="item-desc">3/4/5 ступеней. Нагрузка до 150 кг.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Кисти малярные"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Кисти малярные</div>
+        <div class="item-desc">Натуральная щетина. 25/50/75/100 мм.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Валик малярный"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Валик малярный</div>
+        <div class="item-desc">Ворс 10/18 мм. С ванночкой.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Шпаклёвка финишная"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Шпаклёвка финишная</div>
+        <div class="item-desc">5 кг / 20 кг. Белая, полимерная.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Цементный клей для плитки"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Цементный клей для плитки</div>
+        <div class="item-desc">25 кг мешок. Серый.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Удлинитель 5м / 10м"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Удлинитель 5м / 10м</div>
+        <div class="item-desc">3–5 розеток с заземлением. Сечение 1.5 мм².</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Силиконовый герметик"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Силиконовый герметик</div>
+        <div class="item-desc">280 мл. Санитарный. Белый/прозрачный.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Монтажная пена"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Монтажная пена</div>
+        <div class="item-desc">750 мл. Профессиональная. Расширение ×40.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Малярная лента"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Малярная лента</div>
+        <div class="item-desc">19/38 мм × 50 м. Термостойкая.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Грунтовка глубокого проникновения"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Грунтовка глубокого проникновения</div>
+        <div class="item-desc">1 л / 5 л / 10 л. Для бетона и кирпича.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Уровень строительный"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Уровень строительный</div>
+        <div class="item-desc">40/60/80/120 см. Алюминий. 3 колбы.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Шпатели (набор)"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Шпатели (набор)</div>
+        <div class="item-desc">4/6/8/10/14 см. Нержавеющая сталь.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Сверла по бетону"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Сверла по бетону</div>
+        <div class="item-desc">Набор 5–12 мм. SDS-хвостовик.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Потолочный плинтус"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Потолочный плинтус</div>
+        <div class="item-desc">Полистирол. 50 мм × 2 м. Белый.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="item-card">
+      <div class="photo-wrap">
+        <img class="item-photo" 
+             src="" 
+             alt="Скотч строительный"
+             loading="lazy"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="item-body">
+        <div class="item-name">Скотч строительный</div>
+        <div class="item-desc">48 мм × 50 м. Усиленный.</div>
+        <div class="item-price">
+          <span class="price-label">Цена:</span>
+          <span class="price-value">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="page-sep">
+
+<div class="footer">
+  <strong>KS ИМИДЖ</strong> — Торговый каталог &nbsp;|&nbsp; По вопросам цен и наличия обращайтесь к менеджеру
+</div>
+</body>
+</html>
